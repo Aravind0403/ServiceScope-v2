@@ -40,6 +40,9 @@ def get_password_hash(password: str) -> str:
     Returns:
         Bcrypt hashed password
     """
+    password_bytes = password.encode('utf-8')
+    if len(password_bytes) > 72:
+        password = password[:72]
     return pwd_context.hash(password)
 
 

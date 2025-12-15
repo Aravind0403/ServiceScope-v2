@@ -115,14 +115,12 @@ async def health_check():
     return health
 
 
-# Import and include routers
-# Note: We'll add these as we build them
-# from app.routers import tenants, repositories, jobs, auth
+from app.routers import tenant, repositories, auth
 
-# app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
-# app.include_router(tenants.router, prefix="/api/v1/tenants", tags=["Tenants"])
-# app.include_router(repositories.router, prefix="/api/v1/repositories", tags=["Repositories"])
-# app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["Jobs"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(tenant.router, prefix="/api/v1/tenants", tags=["Tenants"])
+app.include_router(repositories.router, prefix="/api/v1/repositories", tags=["Repositories"])
+#app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["Jobs"])
 
 
 if __name__ == "__main__":
