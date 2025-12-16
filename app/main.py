@@ -18,28 +18,26 @@ from app.db import init_db, close_db, init_neo4j, close_neo4j
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Application lifecycle manager.
-
-    Handles startup and shutdown events:
-    - Startup: Initialize database connections
-    - Shutdown: Close database connections
-    """
-    # Startup
+    """Application lifecycle manager."""
     print("🚀 Starting ServiceScope API...")
 
-    # Initialize Neo4j connection
-    await init_neo4j()
+    # Initialize Neo4j connection (optional)
+    try:
+        await init_neo4j()
+    except Exception as e:
+        print(f"⚠️  Neo4j not available: {e}")
+        print("   Continuing without Neo4j (graph features disabled)")
 
-    # Note: PostgreSQL connection pool is created on first use
     print("✅ Database connections initialized")
 
     yield
 
-    # Shutdown
     print("🛑 Shutting down ServiceScope API...")
     await close_db()
-    await close_neo4j()
+    try:
+        await close_neo4j()
+    except:
+        pass
     print("✅ Database connections closed")
 
 
@@ -115,12 +113,13 @@ async def health_check():
     return health
 
 
-from app.routers import tenant, repositories, auth
+# Import and include routers
+from app.routers import auth, tenant, repositories, jobs
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(tenant.router, prefix="/api/v1/tenants", tags=["Tenants"])
 app.include_router(repositories.router, prefix="/api/v1/repositories", tags=["Repositories"])
-#app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["Jobs"])
+app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["Analysis Jobs"])
 
 
 if __name__ == "__main__":

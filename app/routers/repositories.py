@@ -21,15 +21,15 @@ from app.schemas.repository import (
 )
 from app.core.dependencies import get_current_user
 
+
 router = APIRouter()
 
 
-@router.post("/", response_model=RepositoryResponse,
-             status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=RepositoryResponse, status_code=status.HTTP_201_CREATED)
 async def create_repository(
-        repo_data: RepositoryCreate,
-        current_user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db)
+    repo_data: RepositoryCreate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Submit a repository for analysis.
@@ -65,20 +65,20 @@ async def create_repository(
     await db.commit()
     await db.refresh(new_repo)
 
-    # TODO: Trigger Celery task for analysis
-    # from app.tasks.analyzer import analyze_repository
-    # analyze_repository.delay(str(new_repo.id))
+    # Trigger Celery task for analysis
+    from app.tasks.analyzer import analyze_repository
+    analyze_repository.delay(str(new_repo.id))
 
     return new_repo
 
 
 @router.get("/", response_model=RepositoryListResponse)
 async def list_repositories(
-        skip: int = 0,
-        limit: int = 100,
-        status_filter: RepositoryStatus = None,
-        current_user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db)
+    skip: int = 0,
+    limit: int = 100,
+    status_filter: RepositoryStatus = None,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """
     List repositories for current user's tenant.
@@ -124,9 +124,9 @@ async def list_repositories(
 
 @router.get("/{repo_id}", response_model=RepositoryResponse)
 async def get_repository(
-        repo_id: UUID,
-        current_user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db)
+    repo_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Get repository by ID.
@@ -165,10 +165,10 @@ async def get_repository(
 
 @router.patch("/{repo_id}", response_model=RepositoryResponse)
 async def update_repository(
-        repo_id: UUID,
-        repo_data: RepositoryUpdate,
-        current_user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db)
+    repo_id: UUID,
+    repo_data: RepositoryUpdate,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Update repository.
@@ -216,9 +216,9 @@ async def update_repository(
 
 @router.delete("/{repo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_repository(
-        repo_id: UUID,
-        current_user: User = Depends(get_current_user),
-        db: AsyncSession = Depends(get_db)
+    repo_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Delete repository.
