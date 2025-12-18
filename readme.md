@@ -26,7 +26,7 @@ ServiceScope analyzes your microservices codebase and automatically:
 
 ## 🏆 **Proven at Scale**
 
-✅ **Django Framework**: Analyzed **1,323 dependencies** across **2,886 Python files** in 45 minutes  
+✅ **Django Framework**: Analyzed **1,323 dependencies** across **2,886 Python files** in 9.34 minutes !  
 ✅ **100% Success Rate**: Successfully inferred service names with 80%+ confidence  
 ✅ **Production-Ready**: Multi-tenant SaaS with JWT auth, background processing, and graph visualization
 
