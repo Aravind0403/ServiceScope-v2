@@ -104,7 +104,7 @@ class Settings(BaseSettings):
 
     # ===== LLM Settings =====
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "gemma2:latest"
+    OLLAMA_MODEL: str = "gemma3:4b"
     OLLAMA_TIMEOUT: int = 60  # seconds
 
     # Uncomment if using OpenAI instead of Ollama

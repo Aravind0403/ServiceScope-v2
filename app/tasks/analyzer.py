@@ -285,6 +285,38 @@ def load_to_neo4j(repository_id: UUID, db: Session):
         print(f"⚠️  Neo4j not available, skipping graph creation: {e}")
 
 
+    def load_to_neo4j(repository_id: UUID, db: Session):
+        """Load dependencies to Neo4j graph database."""
+        try:
+            from app.db.neo4j_session import neo4j_client
+
+            # Get all dependencies for this repository
+            calls = db.execute(
+                select(ExtractedCall).where(ExtractedCall.repository_id == repository_id)
+            ).scalars().all()
+
+            for call in calls:
+                # Get inference
+                dependency = db.execute(
+                    select(InferredDependency).where(
+                        InferredDependency.extracted_call_id == call.id
+                    )
+                ).scalar_one_or_none()
+
+                if dependency:
+                    # Create nodes and relationship in Neo4j
+                    neo4j_client.create_service_node(dependency.caller_service)
+                    neo4j_client.create_service_node(dependency.callee_service)
+                    neo4j_client.create_dependency_edge(
+                        caller=dependency.caller_service,
+                        callee=dependency.callee_service,
+                        method=call.method,
+                        url=call.url,
+                        confidence=dependency.confidence
+                    )
+            print("✅ Loaded to Neo4j")
+        except Exception as e:
+            print(f"⚠️  Neo4j not available, skipping graph creation: {e}")
 def cleanup_clone(clone_path: str):
     """Remove cloned repository."""
     if os.path.exists(clone_path):

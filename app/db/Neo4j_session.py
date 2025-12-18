@@ -107,12 +107,12 @@ class Neo4jClient:
         return self.execute_query(query, {"name": service_name, "properties": props})
 
     def create_dependency_edge(
-            self,
-            caller: str,
-            callee: str,
-            method: str,
-            url: str,
-            confidence: float = None
+        self,
+        caller: str,
+        callee: str,
+        method: str,
+        url: str,
+        confidence: float = None
     ):
         """
         Create a CALLS relationship between services.
