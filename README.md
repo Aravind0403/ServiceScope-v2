@@ -1,16 +1,40 @@
 # ServiceScope v2
-
-> **Static dependency mapping for Python microservices — powered by AST parsing and local LLM inference.**
-
-Point it at any Python GitHub repo. It clones it, walks every `.py` file with the AST, finds every outbound HTTP call, asks a local LLM what service is being called, and stores the resulting dependency graph in PostgreSQL and Neo4j.
-
-No agents running in production. No service mesh required. No code changes needed.
-
+ 
+> **Know your blast radius before you deploy — not after.**
+ 
+Built after 4 years of shipping distributed infrastructure at Microsoft across 17,000+ microservices.  
+The hardest part wasn't the code. It was answering: *"If I change this service, what breaks?"*  
+ServiceScope is the tool I wished existed.
+ 
+---
+ 
+## At a Glance
+ 
+| | |
+|---|---|
+| **Repos analysed** | karpathy/nanochat · robusta-dev/robusta · django/django (2,886 files) |
+| **Inference failure rate** | 0% on tested repos |
+| **AST extraction speed** | ~190 files/second |
+| **LLM inference rate** | ~2.4 calls/second (gemma3:4b, local) |
+| **End-to-end (50–200 file repo)** | 15–60 seconds |
+| **External API calls** | Zero — fully local Ollama |
+ 
 [![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104-green.svg)](https://fastapi.tiangolo.com/)
 [![Celery](https://img.shields.io/badge/Celery-5.3-orange.svg)](https://docs.celeryq.dev/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+---
+## The Problem
+ 
+In large microservice ecosystems, dependencies are **implicit, undocumented, and tribal**.
+ 
+Dynamic HTTP calls, shared configs, and environment-variable-resolved hostnames mean no static tool can tell you what's actually connected. Engineers can't answer the fundamental question before a deploy:
+ 
+> *"If I change this component, what breaks?"*
+ 
+At Microsoft, answering this question meant hours of manual tracing across 17K+ services. ServiceScope automates that.
+ 
 ---
 
 ## What it does
@@ -402,7 +426,11 @@ Layer 3 — Data Observability Engine                     future
 ---
 
 ## Author
-
-**Aravind Sundaresan**
-- GitHub: [@Aravind0403](https://github.com/Aravind0403)
-- LinkedIn: [Aravind Sundaresan](https://linkedin.com/in/aravind-sundaresan)
+ 
+**Aravind Sundaresan** — Infrastructure & Distributed Systems Engineer  
+Microsoft (distributed validation platform, 17K+ microservices) · Ex-Amazon (Alexa device infrastructure)
+ 
+- 🌐 [aravindsundaresan.netlify.app](https://aravindsundaresan.netlify.app)
+- 💼 [LinkedIn](https://linkedin.com/in/aravind-sundaresan)
+- ✍️ [Substack](https://aravindsundaresan.substack.com)
+ 
