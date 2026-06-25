@@ -66,6 +66,66 @@ def extract_http_calls_from_file(file_path: str) -> List[Dict]:
 
     calls = []
 
+    # Pre-pass to find local variable assignments to environment variables
+    var_envs = {}
+    
+    class AssignmentVisitor(ast.NodeVisitor):
+        def visit_Assign(self, node):
+            if len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
+                var_name = node.targets[0].id
+                env_var = self._get_env_var(node.value)
+                if env_var:
+                    var_envs[var_name] = env_var
+            self.generic_visit(node)
+            
+        def visit_AnnAssign(self, node):
+            if isinstance(node.target, ast.Name) and node.value:
+                var_name = node.target.id
+                env_var = self._get_env_var(node.value)
+                if env_var:
+                    var_envs[var_name] = env_var
+            self.generic_visit(node)
+
+        def _get_env_var(self, val):
+            # 1. os.environ.get('VAR') or os.getenv('VAR')
+            if isinstance(val, ast.Call):
+                func = val.func
+                if isinstance(func, ast.Attribute):
+                    if (
+                        func.attr == "get"
+                        and isinstance(func.value, ast.Attribute)
+                        and func.value.attr == "environ"
+                        and isinstance(func.value.value, ast.Name)
+                        and func.value.value.id == "os"
+                    ):
+                        if val.args and isinstance(val.args[0], ast.Constant) and isinstance(val.args[0].value, str):
+                            return val.args[0].value
+                elif isinstance(func, ast.Name) and func.id == "getenv":
+                    if val.args and isinstance(val.args[0], ast.Constant) and isinstance(val.args[0].value, str):
+                        return val.args[0].value
+                elif isinstance(func, ast.Attribute) and func.attr == "getenv":
+                    if (
+                        isinstance(func.value, ast.Name)
+                        and func.value.id == "os"
+                    ):
+                        if val.args and isinstance(val.args[0], ast.Constant) and isinstance(val.args[0].value, str):
+                            return val.args[0].value
+            # 2. os.environ['VAR']
+            elif isinstance(val, ast.Subscript):
+                if (
+                    isinstance(val.value, ast.Attribute)
+                    and val.value.attr == "environ"
+                    and isinstance(val.value.value, ast.Name)
+                    and val.value.value.id == "os"
+                ):
+                    if isinstance(val.slice, ast.Constant) and isinstance(val.slice.value, str):
+                        return val.slice.value
+            return None
+
+    # Run the pre-pass
+    assign_visitor = AssignmentVisitor()
+    assign_visitor.visit(tree)
+
     class APICallVisitor(ast.NodeVisitor):
         def visit_Call(self, node):
             try:
@@ -138,9 +198,12 @@ def extract_http_calls_from_file(file_path: str) -> List[Dict]:
 
             # Pattern 7: Variable URL — store variable name
             elif isinstance(arg, ast.Name):
+                url_val = f"<dynamic:{arg.id}>"
+                if arg.id in var_envs:
+                    url_val = f"<dynamic:{var_envs[arg.id]}>"
                 calls.append({
                     "method": method,
-                    "url": f"<dynamic:{arg.id}>",
+                    "url": url_val,
                     "line": node.lineno,
                     "url_is_dynamic": True,
                     "url_raw_expr": arg.id,
@@ -159,9 +222,12 @@ def extract_http_calls_from_file(file_path: str) -> List[Dict]:
                             "url_raw_expr": ast.unparse(arg),
                         })
                 elif isinstance(arg.left, ast.Name):
+                    url_val = f"<dynamic:{arg.left.id}>"
+                    if arg.left.id in var_envs:
+                        url_val = f"<dynamic:{var_envs[arg.left.id]}>"
                     calls.append({
                         "method": method,
-                        "url": f"<dynamic:{arg.left.id}>",
+                        "url": url_val,
                         "line": node.lineno,
                         "url_is_dynamic": True,
                         "url_raw_expr": ast.unparse(arg),

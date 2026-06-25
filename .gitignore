@@ -50,3 +50,7 @@ neo4j_data/
 
 # Local env files with credentials
 env.local
+
+# Benchmarking repositories
+benchmark/repos/
+

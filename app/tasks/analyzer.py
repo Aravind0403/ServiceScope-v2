@@ -118,28 +118,46 @@ def analyze_repository(self, repository_id: str):
                 select(ExtractedCall).where(ExtractedCall.repository_id == repo.id)
             ).scalars().all()
 
+            from app.analysis.linker import CrossLayerLinker
+            linker = CrossLayerLinker(clone_path, services)
+
             failed_inferences = 0
             for call in calls:
-                # Infer dependency
-                inference = infer_service_dependency(
-                    caller=call.service_name,
-                    url=call.url,
-                    method=call.method,
-                    service_context=service_context
-                )
-
-                if inference:
+                # 1. Attempt deterministic resolution via manifest env/static URL mapping
+                link_res = linker.resolve_call(call.service_name, call.url)
+                
+                if link_res:
+                    callee_service, confidence = link_res
                     dependency = InferredDependency(
                         extracted_call_id=call.id,
                         caller_service=call.service_name,
-                        callee_service=inference.get("callee"),
-                        confidence=inference.get("confidence"),
-                        llm_model=inference.get("model"),
-                        llm_response=inference.get("raw_response")
+                        callee_service=callee_service,
+                        confidence=confidence,
+                        llm_model="linker",
+                        llm_response="Resolved via Kubernetes/Helm manifest mapping"
                     )
                     db.add(dependency)
                 else:
-                    failed_inferences += 1
+                    # 2. Fall back to LLM inference
+                    inference = infer_service_dependency(
+                        caller=call.service_name,
+                        url=call.url,
+                        method=call.method,
+                        service_context=service_context
+                    )
+
+                    if inference:
+                        dependency = InferredDependency(
+                            extracted_call_id=call.id,
+                            caller_service=call.service_name,
+                            callee_service=inference.get("callee"),
+                            confidence=inference.get("confidence"),
+                            llm_model=inference.get("model"),
+                            llm_response=inference.get("raw_response")
+                        )
+                        db.add(dependency)
+                    else:
+                        failed_inferences += 1
 
             db.commit()
 
