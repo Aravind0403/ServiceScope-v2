@@ -1,0 +1,490 @@
+{
+  "repo": "robusta-dev/robusta",
+  "model": "llama3.1:8b",
+  "mode": "few-shot",
+  "calls_extracted": 35,
+  "predictions": 35,
+  "extraction_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 25,
+    "fp": 0,
+    "fn": 0,
+    "fn_calls": [],
+    "fp_calls": []
+  },
+  "inference_metrics": {
+    "precision": 0.364,
+    "recall": 0.174,
+    "f1": 0.235,
+    "tp": 4,
+    "fp": 7,
+    "fn": 19,
+    "tp_edges": [
+      [
+        "playbooks",
+        "grafanarenderer"
+      ],
+      [
+        "robusta",
+        "holmesslackbot"
+      ],
+      [
+        "robusta",
+        "pushover"
+      ],
+      [
+        "robusta",
+        "relay"
+      ]
+    ],
+    "fp_edges": [
+      [
+        "playbooks",
+        "playbooks"
+      ],
+      [
+        "playbooks",
+        "unknown"
+      ],
+      [
+        "robusta",
+        "robusta"
+      ],
+      [
+        "robusta",
+        "runner"
+      ],
+      [
+        "robusta",
+        "self"
+      ],
+      [
+        "robusta",
+        "synchronization"
+      ],
+      [
+        "robusta",
+        "unknown"
+      ]
+    ],
+    "fn_edges": [
+      [
+        "playbooks",
+        "alertmanager"
+      ],
+      [
+        "playbooks",
+        "external"
+      ],
+      [
+        "playbooks",
+        "stackoverflow"
+      ],
+      [
+        "playbooks",
+        "webhook"
+      ],
+      [
+        "robusta",
+        "alertmanager"
+      ],
+      [
+        "robusta",
+        "argocd"
+      ],
+      [
+        "robusta",
+        "config"
+      ],
+      [
+        "robusta",
+        "discord"
+      ],
+      [
+        "robusta",
+        "googlechat"
+      ],
+      [
+        "robusta",
+        "msteams"
+      ],
+      [
+        "robusta",
+        "openai"
+      ],
+      [
+        "robusta",
+        "pagerduty"
+      ],
+      [
+        "robusta",
+        "robustarunner"
+      ],
+      [
+        "robusta",
+        "robustatelemetry"
+      ],
+      [
+        "robusta",
+        "servicenow"
+      ],
+      [
+        "robusta",
+        "telegram"
+      ],
+      [
+        "robusta",
+        "victorops"
+      ],
+      [
+        "robusta",
+        "webhook"
+      ],
+      [
+        "robusta",
+        "yamessenger"
+      ]
+    ],
+    "calibration": {
+      "0.90-1.00": {
+        "count": 17,
+        "accuracy": 0.294
+      },
+      "0.80-0.90": {
+        "count": 1,
+        "accuracy": 0.0
+      },
+      "0.00-0.70": {
+        "count": 17,
+        "accuracy": 0.0
+      }
+    }
+  },
+  "timing": {
+    "extract_s": 0.488,
+    "infer_s": 39.033,
+    "total_s": 39.521,
+    "calls_per_sec": 0.9,
+    "avg_infer_ms": 1114.5,
+    "parse_failures": 0
+  },
+  "all_predictions": [
+    {
+      "caller": "playbooks",
+      "callee": "unknown",
+      "confidence": 0.4,
+      "url": "<dynamic:url>",
+      "method": "get",
+      "file": "playbooks/robusta_playbooks/alerts_integration.py",
+      "elapsed_ms": 1584
+    },
+    {
+      "caller": "playbooks",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:params.url>",
+      "method": "post",
+      "file": "playbooks/robusta_playbooks/babysitter.py",
+      "elapsed_ms": 1127
+    },
+    {
+      "caller": "playbooks",
+      "callee": "unknown",
+      "confidence": 0.95,
+      "url": "http://localhost:",
+      "method": "post",
+      "file": "playbooks/robusta_playbooks/prometheus_simulation.py",
+      "elapsed_ms": 999
+    },
+    {
+      "caller": "playbooks",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "http://localhost:",
+      "method": "post",
+      "file": "playbooks/robusta_playbooks/prometheus_simulation.py",
+      "elapsed_ms": 981
+    },
+    {
+      "caller": "playbooks",
+      "callee": "grafana_renderer",
+      "confidence": 0.99,
+      "url": "<dynamic:GRAFANA_RENDERER_URL>",
+      "method": "post",
+      "file": "playbooks/robusta_playbooks/deployment_status_report.py",
+      "elapsed_ms": 1272
+    },
+    {
+      "caller": "playbooks",
+      "callee": "playbooks",
+      "confidence": 1.0,
+      "url": "<dynamic:action_params.url>",
+      "method": "get",
+      "file": "playbooks/robusta_playbooks/http_actions.py",
+      "elapsed_ms": 1267
+    },
+    {
+      "caller": "playbooks",
+      "callee": "playbooks_service",
+      "confidence": 1.0,
+      "url": "<dynamic:action_params.url>",
+      "method": "post",
+      "file": "playbooks/robusta_playbooks/http_actions.py",
+      "elapsed_ms": 1238
+    },
+    {
+      "caller": "playbooks",
+      "callee": "unknown",
+      "confidence": 0.4,
+      "url": "<dynamic:action_params.url>",
+      "method": "put",
+      "file": "playbooks/robusta_playbooks/http_actions.py",
+      "elapsed_ms": 1048
+    },
+    {
+      "caller": "robusta",
+      "callee": "runner_service",
+      "confidence": 1.0,
+      "url": "<dynamic:RUNNER_GET_INFO_URL>",
+      "method": "get",
+      "file": "src/robusta/clients/robusta_client.py",
+      "elapsed_ms": 1253
+    },
+    {
+      "caller": "robusta",
+      "callee": "relay_service",
+      "confidence": 1.0,
+      "url": "<dynamic:RELAY_EXTERNAL_ACTIONS_URL>",
+      "method": "post",
+      "file": "src/robusta/core/reporting/action_requests.py",
+      "elapsed_ms": 1114
+    },
+    {
+      "caller": "robusta",
+      "callee": "robusta",
+      "confidence": 1.0,
+      "url": "<dynamic:self.url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/webhook/webhook_sink.py",
+      "elapsed_ms": 1141
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.5,
+      "url": "<dynamic:self.url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/webhook/webhook_sink.py",
+      "elapsed_ms": 989
+    },
+    {
+      "caller": "robusta",
+      "callee": "self_service",
+      "confidence": 0.99,
+      "url": "<dynamic:self.change_url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/pagerduty/pagerduty_sink.py",
+      "elapsed_ms": 1134
+    },
+    {
+      "caller": "robusta",
+      "callee": "robusta",
+      "confidence": 1.0,
+      "url": "<dynamic:self.events_url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/pagerduty/pagerduty_sink.py",
+      "elapsed_ms": 1145
+    },
+    {
+      "caller": "robusta",
+      "callee": "pushover_service",
+      "confidence": 0.95,
+      "url": "<dynamic:self.pushover_url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/pushover/pushover_client.py",
+      "elapsed_ms": 1183
+    },
+    {
+      "caller": "robusta",
+      "callee": "pushover_service",
+      "confidence": 1.0,
+      "url": "<dynamic:self.pushover_url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/pushover/pushover_client.py",
+      "elapsed_ms": 1070
+    },
+    {
+      "caller": "robusta",
+      "callee": "holmes_slackbot",
+      "confidence": 1.0,
+      "url": "<dynamic:RUNNER_GET_HOLMES_SLACKBOT_INFO>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/robusta/robusta_sink.py",
+      "elapsed_ms": 1374
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.4,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/telegram/telegram_client.py",
+      "elapsed_ms": 1091
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 1.0,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/telegram/telegram_client.py",
+      "elapsed_ms": 977
+    },
+    {
+      "caller": "robusta",
+      "callee": "robusta",
+      "confidence": 1.0,
+      "url": "<dynamic:self.url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/victorops/victorops_sink.py",
+      "elapsed_ms": 1056
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 1.0,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/yamessenger/yamessenger_client.py",
+      "elapsed_ms": 1100
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/core/sinks/yamessenger/yamessenger_client.py",
+      "elapsed_ms": 981
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/core/playbooks/internal/ai_integration.py",
+      "elapsed_ms": 815
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.5,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/core/playbooks/internal/ai_integration.py",
+      "elapsed_ms": 978
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/core/playbooks/internal/ai_integration.py",
+      "elapsed_ms": 1007
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:url>",
+      "method": "get",
+      "file": "src/robusta/runner/config_loader.py",
+      "elapsed_ms": 1201
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 1.0,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/runner/web_api.py",
+      "elapsed_ms": 1197
+    },
+    {
+      "caller": "robusta",
+      "callee": "self_service",
+      "confidence": 0.0,
+      "url": "<dynamic:self.endpoint>",
+      "method": "post",
+      "file": "src/robusta/runner/telemetry_service.py",
+      "elapsed_ms": 962
+    },
+    {
+      "caller": "robusta",
+      "callee": "self_service",
+      "confidence": 0.0,
+      "url": "<dynamic:self.url>",
+      "method": "post",
+      "file": "src/robusta/integrations/discord/sender.py",
+      "elapsed_ms": 1127
+    },
+    {
+      "caller": "robusta",
+      "callee": "self_service",
+      "confidence": 0.8,
+      "url": "<dynamic:self.url>",
+      "method": "post",
+      "file": "src/robusta/integrations/discord/sender.py",
+      "elapsed_ms": 1058
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:self.params.webhook_url.get_secret_value()>",
+      "method": "post",
+      "file": "src/robusta/integrations/google_chat/sender.py",
+      "elapsed_ms": 1201
+    },
+    {
+      "caller": "robusta",
+      "callee": "synchronization_service",
+      "confidence": 0.9,
+      "url": "<dynamic:sync_url>",
+      "method": "post",
+      "file": "src/robusta/integrations/argocd/argocd_client.py",
+      "elapsed_ms": 1133
+    },
+    {
+      "caller": "robusta",
+      "callee": "self_service",
+      "confidence": 0.0,
+      "url": "<dynamic:self.webhook_url>",
+      "method": "post",
+      "file": "src/robusta/integrations/msteams/msteams_msg.py",
+      "elapsed_ms": 1133
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.4,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/integrations/servicenow/sender.py",
+      "elapsed_ms": 1091
+    },
+    {
+      "caller": "robusta",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "src/robusta/integrations/servicenow/sender.py",
+      "elapsed_ms": 982
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "repo": "GoogleCloudPlatform/microservices-demo",
+  "url": "https://github.com/GoogleCloudPlatform/microservices-demo",
+  "description": "Google Cloud Platform microservices demo (Online Boutique). Contains both Python and Go microservices calling each other via HTTP and gRPC.",
+  "ground_truth_source": "published_architecture_and_code_inspection",
+  "notes": {
+    "extraction": "AST parser extracts file-level HTTP/gRPC outgoing calls. Helper functions (mustConnGRPC) compress multiple client initializations into a single file-level gRPC signature.",
+    "inference": "Validates the service dependencies between frontend, checkoutservice, recommendationservice, and their target backends (adservice, cartservice, currencyservice, emailservice, paymentservice, productcatalogservice, shippingservice, shoppingassistantservice)."
+  },
+  "true_calls": [
+    {"caller": "emailservice", "method": "grpc", "file": "src/emailservice/email_client.py"},
+    {"caller": "recommendationservice", "method": "grpc", "file": "src/recommendationservice/recommendation_server.py"},
+    {"caller": "checkoutservice", "method": "grpc", "file": "src/checkoutservice/main.go"},
+    {"caller": "frontend", "method": "http.MethodPost", "file": "src/frontend/handlers.go"},
+    {"caller": "frontend", "method": "grpc", "file": "src/frontend/main.go"},
+    {"caller": "frontend", "method": "get", "file": "src/frontend/packaging_info.go"},
+    {"caller": "productcatalogservice", "method": "grpc", "file": "src/productcatalogservice/server.go"}
+  ],
+  "true_dependencies": [
+    {"caller": "recommendationservice", "callee": "productcatalogservice", "verified": true, "evidence": "recommendation_server.py queries product catalog service"},
+    {"caller": "checkoutservice", "callee": "shippingservice", "verified": true, "evidence": "checkoutservice calls shippingService"},
+    {"caller": "checkoutservice", "callee": "productcatalogservice", "verified": true, "evidence": "checkoutservice calls productCatalogService"},
+    {"caller": "checkoutservice", "callee": "cartservice", "verified": true, "evidence": "checkoutservice calls cartService"},
+    {"caller": "checkoutservice", "callee": "currencyservice", "verified": true, "evidence": "checkoutservice calls currencyService"},
+    {"caller": "checkoutservice", "callee": "emailservice", "verified": true, "evidence": "checkoutservice calls emailService"},
+    {"caller": "checkoutservice", "callee": "paymentservice", "verified": true, "evidence": "checkoutservice calls paymentService"},
+    {"caller": "frontend", "callee": "currencyservice", "verified": true, "evidence": "frontend connects to currencyService"},
+    {"caller": "frontend", "callee": "productcatalogservice", "verified": true, "evidence": "frontend connects to productCatalogService"},
+    {"caller": "frontend", "callee": "cartservice", "verified": true, "evidence": "frontend connects to cartService"},
+    {"caller": "frontend", "callee": "recommendationservice", "verified": true, "evidence": "frontend connects to recommendationService"},
+    {"caller": "frontend", "callee": "shippingservice", "verified": true, "evidence": "frontend connects to shippingService"},
+    {"caller": "frontend", "callee": "checkoutservice", "verified": true, "evidence": "frontend connects to checkoutService"},
+    {"caller": "frontend", "callee": "adservice", "verified": true, "evidence": "frontend connects to adService"},
+    {"caller": "frontend", "callee": "shoppingassistantservice", "verified": true, "evidence": "frontend handler posts to shopping assistant HTTP URL"}
+  ]
+}

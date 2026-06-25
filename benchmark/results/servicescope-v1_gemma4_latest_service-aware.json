@@ -1,0 +1,124 @@
+{
+  "repo": "Aravind0403/ServiceScope",
+  "model": "gemma4:latest",
+  "mode": "service-aware",
+  "calls_extracted": 5,
+  "predictions": 5,
+  "extraction_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "fn_calls": [],
+    "fp_calls": []
+  },
+  "inference_metrics": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "tp": 0,
+    "fp": 1,
+    "fn": 5,
+    "tp_edges": [],
+    "fp_edges": [
+      [
+        "runpipeline.py",
+        "neo4jintegration"
+      ]
+    ],
+    "fn_edges": [
+      [
+        "inference",
+        "ollama"
+      ],
+      [
+        "runpipeline.py",
+        "ollama"
+      ],
+      [
+        "samples",
+        "customer"
+      ],
+      [
+        "samples",
+        "payment"
+      ],
+      [
+        "samples",
+        "reporting"
+      ]
+    ],
+    "calibration": {
+      "0.90-1.00": {
+        "count": 3,
+        "accuracy": 0.667
+      },
+      "0.00-0.70": {
+        "count": 2,
+        "accuracy": 0.0
+      }
+    }
+  },
+  "timing": {
+    "extract_s": 0.017,
+    "infer_s": 16.44,
+    "total_s": 16.457,
+    "calls_per_sec": 0.3,
+    "avg_infer_ms": 3286.8,
+    "parse_failures": 0
+  },
+  "all_predictions": [
+    {
+      "caller": "run_pipeline.py",
+      "callee": "neo4jintegration",
+      "confidence": 1.0,
+      "is_external": false,
+      "url": "http://localhost:11434/api/tags",
+      "method": "get",
+      "file": "run_pipeline.py",
+      "elapsed_ms": 9851
+    },
+    {
+      "caller": "Samples",
+      "callee": "customer-service",
+      "confidence": 1.0,
+      "is_external": true,
+      "url": "http://customer-service.internal/api/v1/customers",
+      "method": "get",
+      "file": "Samples/service_a/app.py",
+      "elapsed_ms": 1682
+    },
+    {
+      "caller": "Samples",
+      "callee": "unknown",
+      "confidence": 0.1,
+      "is_external": true,
+      "url": "http://localhost:5001/api/pay",
+      "method": "post",
+      "file": "Samples/service_a/app.py",
+      "elapsed_ms": 1591
+    },
+    {
+      "caller": "Samples",
+      "callee": "unknown",
+      "confidence": 0.1,
+      "is_external": true,
+      "url": "http://reporting-service/api/metrics",
+      "method": "get",
+      "file": "Samples/service_b/main.py",
+      "elapsed_ms": 1579
+    },
+    {
+      "caller": "Inference",
+      "callee": "ollama",
+      "confidence": 1.0,
+      "is_external": true,
+      "url": "http://localhost:11434/api/generate",
+      "method": "post",
+      "file": "Inference/infer_service_dependency.py",
+      "elapsed_ms": 1731
+    }
+  ]
+}

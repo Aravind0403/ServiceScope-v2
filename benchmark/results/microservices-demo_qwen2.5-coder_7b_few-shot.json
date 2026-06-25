@@ -1,0 +1,189 @@
+{
+  "repo": "GoogleCloudPlatform/microservices-demo",
+  "model": "qwen2.5-coder:7b",
+  "mode": "few-shot",
+  "calls_extracted": 7,
+  "predictions": 7,
+  "extraction_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 7,
+    "fp": 0,
+    "fn": 0,
+    "fn_calls": [],
+    "fp_calls": []
+  },
+  "inference_metrics": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "tp": 0,
+    "fp": 5,
+    "fn": 15,
+    "tp_edges": [],
+    "fp_edges": [
+      [
+        "checkout",
+        "unknown"
+      ],
+      [
+        "email",
+        "unknown"
+      ],
+      [
+        "frontend",
+        "unknown"
+      ],
+      [
+        "productcatalog",
+        "unknown"
+      ],
+      [
+        "recommendation",
+        "unknown"
+      ]
+    ],
+    "fn_edges": [
+      [
+        "checkout",
+        "cart"
+      ],
+      [
+        "checkout",
+        "currency"
+      ],
+      [
+        "checkout",
+        "email"
+      ],
+      [
+        "checkout",
+        "payment"
+      ],
+      [
+        "checkout",
+        "productcatalog"
+      ],
+      [
+        "checkout",
+        "shipping"
+      ],
+      [
+        "frontend",
+        "ad"
+      ],
+      [
+        "frontend",
+        "cart"
+      ],
+      [
+        "frontend",
+        "checkout"
+      ],
+      [
+        "frontend",
+        "currency"
+      ],
+      [
+        "frontend",
+        "productcatalog"
+      ],
+      [
+        "frontend",
+        "recommendation"
+      ],
+      [
+        "frontend",
+        "shipping"
+      ],
+      [
+        "frontend",
+        "shoppingassistant"
+      ],
+      [
+        "recommendation",
+        "productcatalog"
+      ]
+    ],
+    "calibration": {
+      "0.00-0.70": {
+        "count": 7,
+        "accuracy": 0.0
+      }
+    }
+  },
+  "timing": {
+    "extract_s": 0.056,
+    "infer_s": 7.568,
+    "total_s": 7.624,
+    "calls_per_sec": 0.92,
+    "avg_infer_ms": 1079.9,
+    "parse_failures": 0
+  },
+  "all_predictions": [
+    {
+      "caller": "emailservice",
+      "callee": "unknown",
+      "confidence": 0.1,
+      "url": "[::]:8080",
+      "method": "grpc",
+      "file": "src/emailservice/email_client.py",
+      "elapsed_ms": 1520
+    },
+    {
+      "caller": "recommendationservice",
+      "callee": "unknown",
+      "confidence": 0.4,
+      "url": "<dynamic:catalog_addr>",
+      "method": "grpc",
+      "file": "src/recommendationservice/recommendation_server.py",
+      "elapsed_ms": 993
+    },
+    {
+      "caller": "checkoutservice",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:addr>",
+      "method": "grpc",
+      "file": "src/checkoutservice/main.go",
+      "elapsed_ms": 967
+    },
+    {
+      "caller": "frontend",
+      "callee": "unknown",
+      "confidence": 0.4,
+      "url": "<dynamic:url>",
+      "method": "http.MethodPost",
+      "file": "src/frontend/handlers.go",
+      "elapsed_ms": 1004
+    },
+    {
+      "caller": "frontend",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:addr>",
+      "method": "grpc",
+      "file": "src/frontend/main.go",
+      "elapsed_ms": 962
+    },
+    {
+      "caller": "frontend",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:url>",
+      "method": "get",
+      "file": "src/frontend/packaging_info.go",
+      "elapsed_ms": 1011
+    },
+    {
+      "caller": "productcatalogservice",
+      "callee": "unknown",
+      "confidence": 0.0,
+      "url": "<dynamic:addr>",
+      "method": "grpc",
+      "file": "src/productcatalogservice/server.go",
+      "elapsed_ms": 1102
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "repo": "karpathy/nanochat",
+  "model": "gemma4:latest",
+  "mode": "few-shot",
+  "calls_extracted": 3,
+  "predictions": 3,
+  "extraction_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 3,
+    "fp": 0,
+    "fn": 0,
+    "fn_calls": [],
+    "fp_calls": []
+  },
+  "inference_metrics": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "tp": 0,
+    "fp": 2,
+    "fn": 4,
+    "tp_edges": [],
+    "fp_edges": [
+      [
+        "dev",
+        "unknown"
+      ],
+      [
+        "nanochat",
+        "unknown"
+      ]
+    ],
+    "fn_edges": [
+      [
+        "dev",
+        "openrouter"
+      ],
+      [
+        "nanochat",
+        "awss3"
+      ],
+      [
+        "nanochat",
+        "github"
+      ],
+      [
+        "nanochat",
+        "huggingface"
+      ]
+    ],
+    "calibration": {
+      "0.00-0.70": {
+        "count": 3,
+        "accuracy": 0.0
+      }
+    }
+  },
+  "timing": {
+    "extract_s": 0.121,
+    "infer_s": 4.097,
+    "total_s": 4.218,
+    "calls_per_sec": 0.73,
+    "avg_infer_ms": 1365.0,
+    "parse_failures": 0
+  },
+  "all_predictions": [
+    {
+      "caller": "nanochat",
+      "callee": "unknown",
+      "confidence": 0.4,
+      "url": "<dynamic:url>",
+      "method": "get",
+      "file": "nanochat/dataset.py",
+      "elapsed_ms": 1656
+    },
+    {
+      "caller": "nanochat",
+      "callee": "unknown",
+      "confidence": 0.35,
+      "url": "<dynamic:url>",
+      "method": "get",
+      "file": "nanochat/common.py",
+      "elapsed_ms": 965
+    },
+    {
+      "caller": "dev",
+      "callee": "unknown",
+      "confidence": 0.35,
+      "url": "<dynamic:url>",
+      "method": "post",
+      "file": "dev/gen_synthetic_data.py",
+      "elapsed_ms": 1474
+    }
+  ]
+}

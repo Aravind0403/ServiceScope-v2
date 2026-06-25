@@ -106,6 +106,13 @@ def analyze_repository(self, repository_id: str):
             job.update_progress(60.0, JobStatus.RUNNING)
             db.commit()
 
+            # Discover services first for service-aware prompting
+            from app.extraction.service_discovery import discover_services
+            services = discover_services(clone_path)
+            service_context = ""
+            if services:
+                service_context = f"Known internal services in this repository: {', '.join(services)}\n"
+
             # Get all saved calls
             calls = db.execute(
                 select(ExtractedCall).where(ExtractedCall.repository_id == repo.id)
@@ -117,7 +124,8 @@ def analyze_repository(self, repository_id: str):
                 inference = infer_service_dependency(
                     caller=call.service_name,
                     url=call.url,
-                    method=call.method
+                    method=call.method,
+                    service_context=service_context
                 )
 
                 if inference:
@@ -323,10 +331,10 @@ def get_commit_hash(clone_path: str) -> str:
 
 
 def count_python_files(clone_path: str) -> int:
-    """Count Python files in repository."""
+    """Count Python and Go files in repository."""
     count = 0
     for root, dirs, files in os.walk(clone_path):
-        count += sum(1 for f in files if f.endswith(".py"))
+        count += sum(1 for f in files if f.endswith((".py", ".go")))
     return count
 
 
@@ -336,22 +344,21 @@ def extract_http_calls(clone_path: str) -> list:
     return walk_and_extract_calls(clone_path)
 
 
-def infer_service_dependency(caller: str, url: str, method: str) -> dict:
-    """Infer service dependency using LLM."""
+def infer_service_dependency(caller: str, url: str, method: str, service_context: str = "") -> dict:
+    """Infer service dependency using LLM, using service_context if available."""
 
     prompt = f"""You are a microservice architecture assistant.
-
+{service_context}
 Given this HTTP call made by service "{caller}":
   Method: {method.upper()}
   URL: {url}
 
-Identify the most likely internal service being called and your confidence.
+Identify the service being called and your confidence.
+If it matches a known service, use that exact name.
+If it's an external API (Stripe, AWS, Twilio, etc.), return the external name and set "is_external": true.
 
 Respond with ONLY a JSON object, no markdown, no explanation:
-{{"service": "service_name", "confidence": 0.0}}
-
-Where "service" is a short snake_case name (e.g. "payment_service") and
-"confidence" is a float between 0.0 and 1.0."""
+{{"service": "service_name", "confidence": 0.0, "is_external": false}}"""
 
     try:
         response = requests.post(
@@ -359,17 +366,17 @@ Where "service" is a short snake_case name (e.g. "payment_service") and
             json={
                 "model": settings.OLLAMA_MODEL,
                 "prompt": prompt.strip(),
-                "stream": False
+                "stream": False,
+                "format": "json"
             },
             timeout=settings.OLLAMA_TIMEOUT
         )
 
         data = response.json()
+        raw_response = data.get("response", "").strip() or data.get("thinking", "").strip()
 
-        if "response" not in data:
+        if not raw_response:
             return None
-
-        raw_response = data["response"].strip()
 
         # Parse JSON response; fall back to text extraction if needed
         confidence = 0.5  # fallback if LLM does not provide a valid score
@@ -382,6 +389,7 @@ Where "service" is a short snake_case name (e.g. "payment_service") and
             callee = str(parsed.get("service", "")).strip().strip('"')
             confidence = float(parsed.get("confidence", 0.5))
             confidence = max(0.0, min(1.0, confidence))
+            is_external = bool(parsed.get("is_external", False))
         except (_json.JSONDecodeError, ValueError, TypeError):
             # Fallback: take the first non-empty line as the service name
             callee = raw_response.replace("**", "").strip().strip('"').split('\n')[0]

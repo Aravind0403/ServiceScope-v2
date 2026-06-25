@@ -181,7 +181,7 @@ Provide a clear, concise answer based on the analysis data above. If the data do
         )
         response.raise_for_status()
         data = response.json()
-        return data.get("response", "").strip()
+        return data.get("response", "").strip() or data.get("thinking", "").strip()
 
     except Exception as e:
         raise HTTPException(
@@ -321,7 +321,7 @@ Be concise and specific."""
 
         return {
             "repository_id": repository_id,
-            "insights": data.get("response", "").strip(),
+            "insights": data.get("response", "").strip() or data.get("thinking", "").strip(),
             "generated_at": "now",
             "model": settings.OLLAMA_MODEL
         }

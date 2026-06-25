@@ -1,0 +1,21 @@
+{
+  "repo": "karpathy/nanochat",
+  "url": "https://github.com/karpathy/nanochat",
+  "description": "Minimal chat application by Andrej Karpathy. Contains 3 HTTP calls - resolved from dynamic variables.",
+  "ground_truth_source": "manual_code_inspection",
+  "notes": {
+    "extraction": "3 true calls: 2 requests calls + 1 urllib.request.urlopen call in common.py.",
+    "inference": "Dependencies manually verified: huggingface for dataset download, openrouter for synthetic data generation, aws_s3 and github for file downloads in common.py."
+  },
+  "true_calls": [
+    {"caller": "nanochat", "method": "get",  "file": "nanochat/dataset.py"},
+    {"caller": "nanochat", "method": "get",  "file": "nanochat/common.py"},
+    {"caller": "dev",      "method": "post", "file": "dev/gen_synthetic_data.py"}
+  ],
+  "true_dependencies": [
+    {"caller": "nanochat", "callee": "huggingface", "verified": true, "evidence": "dataset.py downloads dataset resolved from HuggingFace dataset URL constant"},
+    {"caller": "nanochat", "callee": "aws_s3",      "verified": true, "evidence": "common.py downloads eval bundle from Amazon S3 url"},
+    {"caller": "nanochat", "callee": "github",      "verified": true, "evidence": "common.py downloads word list from GitHub"},
+    {"caller": "dev",      "callee": "openrouter",  "verified": true, "evidence": "gen_synthetic_data.py posts to OpenRouter API"}
+  ]
+}

@@ -1,0 +1,113 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\citation{dragoni2017,fowler2014,newman2021}
+\citation{datadog}
+\citation{backstage}
+\@writefile{toc}{\contentsline {title}{ServiceScope: Pre-Deployment Inter-Service Dependency Mapping via Multi-Language AST Analysis and Local LLM Inference}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\authcount {1}}
+\@writefile{toc}{\contentsline {author}{Anonymous}{1}{chapter.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1.1}\protected@file@percent }
+\newlabel{sec:intro}{{1}{1}{Introduction}{section.1.1}{}}
+\citation{cerny2022}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Scope and Assumptions}{2}{subsection.1.1.1}\protected@file@percent }
+\newlabel{sec:scope}{{1.1}{2}{Scope and Assumptions}{subsection.1.1.1}{}}
+\citation{datadog}
+\citation{istio}
+\citation{cerny2022}
+\citation{backstage}
+\citation{codescene}
+\citation{codebert}
+\citation{zhu2023survey,fan2023llmse}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{3}{section.1.2}\protected@file@percent }
+\newlabel{sec:related}{{2}{3}{Related Work}{section.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Runtime and Dynamic Instrumentation Approaches}{3}{subsection.1.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Static and Heuristic Approaches}{3}{subsection.1.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}LLM-Assisted Software Engineering}{3}{subsection.1.2.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The \textsc  {ServiceScope} four-stage pipeline. A cloned repository passes through language detection, AST extraction, local LLM inference, and graph-based blast radius computation.}}{4}{figure.1.1}\protected@file@percent }
+\newlabel{fig:pipeline}{{1}{4}{The \textsc {ServiceScope} four-stage pipeline. A cloned repository passes through language detection, AST extraction, local LLM inference, and graph-based blast radius computation}{figure.1.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}System Architecture}{4}{section.1.3}\protected@file@percent }
+\newlabel{sec:arch}{{3}{4}{System Architecture}{section.1.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Multi-Language AST Extraction}{4}{section.1.4}\protected@file@percent }
+\newlabel{sec:extraction}{{4}{4}{Multi-Language AST Extraction}{section.1.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Python Extractor}{4}{subsection.1.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Go Extractor}{5}{subsection.1.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Inter-Procedural Ceiling}{5}{subsection.1.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Polyglot Service Discovery}{5}{subsection.1.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}LLM Inference Pipeline}{6}{section.1.5}\protected@file@percent }
+\newlabel{sec:llm}{{5}{6}{LLM Inference Pipeline}{section.1.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Model Selection}{6}{subsection.1.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Four-Phase Prompt Design}{6}{subsection.1.5.2}\protected@file@percent }
+\newlabel{sec:phases}{{5.2}{6}{Four-Phase Prompt Design}{subsection.1.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Engineering Notes}{6}{subsection.1.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Blast Radius Computation}{7}{section.1.6}\protected@file@percent }
+\newlabel{sec:blast}{{6}{7}{Blast Radius Computation}{section.1.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Graph Model}{7}{subsection.1.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Confidence Propagation}{7}{subsection.1.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Bidirectional Traversal}{7}{subsection.1.6.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textsc  {ServiceScope} inferred dependency graph for the case study repository. Edge labels denote LLM inference confidence; all edges were verified against ground truth.}}{8}{figure.1.2}\protected@file@percent }
+\newlabel{fig:graph}{{2}{8}{\textsc {ServiceScope} inferred dependency graph for the case study repository. Edge labels denote LLM inference confidence; all edges were verified against ground truth}{figure.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}API}{8}{subsection.1.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Evaluation}{8}{section.1.7}\protected@file@percent }
+\newlabel{sec:eval}{{7}{8}{Evaluation}{section.1.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Dataset Construction and Ground Truth}{8}{subsection.1.7.1}\protected@file@percent }
+\newlabel{sec:gt}{{7.1}{8}{Dataset Construction and Ground Truth}{subsection.1.7.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Benchmark repositories. GT = ground truth source.}}{9}{table.1.1}\protected@file@percent }
+\newlabel{tab:repos}{{1}{9}{Benchmark repositories. GT = ground truth source}{table.1.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Metrics}{9}{subsection.1.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Extraction Accuracy}{9}{subsection.1.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Inference Accuracy: Four-Phase Progression}{9}{subsection.1.7.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Best inference F1 per repository across four pipeline phases. SA = service-aware; ZS = zero-shot; FS = few-shot.}}{10}{table.1.2}\protected@file@percent }
+\newlabel{tab:inference}{{2}{10}{Best inference F1 per repository across four pipeline phases. SA = service-aware; ZS = zero-shot; FS = few-shot}{table.1.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Model Ablation}{10}{subsection.1.7.5}\protected@file@percent }
+\newlabel{sec:ablation}{{7.5}{10}{Model Ablation}{subsection.1.7.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Blast Radius Accuracy}{10}{subsection.1.7.6}\protected@file@percent }
+\citation{argocd}
+\citation{argocd-arch}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Blast radius evaluation: static baseline vs.\ zero-shot LLM vs.\ service-aware (SA) LLM inference.}}{11}{table.1.3}\protected@file@percent }
+\newlabel{tab:blast}{{3}{11}{Blast radius evaluation: static baseline vs.\ zero-shot LLM vs.\ service-aware (SA) LLM inference}{table.1.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.7}Verification on a Production System}{11}{subsection.1.7.7}\protected@file@percent }
+\newlabel{sec:argocd}{{7.7}{11}{Verification on a Production System}{subsection.1.7.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Discussion and Threats to Validity}{11}{section.1.8}\protected@file@percent }
+\newlabel{sec:discussion}{{8}{11}{Discussion and Threats to Validity}{section.1.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Construct Validity}{11}{subsection.1.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Internal Validity}{12}{subsection.1.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}External Validity}{12}{subsection.1.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion}{12}{section.1.9}\protected@file@percent }
+\newlabel{sec:conclusion}{{9}{12}{Conclusion}{section.1.9}{}}
+\bibcite{cerny2022}{1}
+\bibcite{datadog}{2}
+\bibcite{backstage}{3}
+\bibcite{codebert}{4}
+\bibcite{zhu2023survey}{5}
+\bibcite{fan2023llmse}{6}
+\bibcite{argocd}{7}
+\bibcite{argocd-arch}{8}
+\bibcite{dragoni2017}{9}
+\bibcite{fowler2014}{10}
+\bibcite{istio}{11}
+\bibcite{newman2021}{12}
+\bibcite{codescene}{13}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Model Specifications}{14}{section.A.1}\protected@file@percent }
+\newlabel{app:models}{{A}{14}{Model Specifications}{section.A.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces LLM models used in ablation study.}}{14}{table.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Prompt Templates}{14}{section.A.2}\protected@file@percent }
+\newlabel{app:prompts}{{B}{14}{Prompt Templates}{section.A.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Full Ablation Results}{15}{section.A.3}\protected@file@percent }
+\newlabel{app:ablation}{{C}{15}{Full Ablation Results}{section.A.3}{}}
+\gdef \@abspage@last{15}

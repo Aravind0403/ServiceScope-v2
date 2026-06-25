@@ -1,0 +1,110 @@
+{
+  "repo": "Aravind0403/ServiceScope",
+  "model": "gemma4:latest",
+  "mode": "zero-shot",
+  "calls_extracted": 5,
+  "predictions": 5,
+  "extraction_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "fn_calls": [],
+    "fp_calls": []
+  },
+  "inference_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "tp_edges": [
+      [
+        "inference",
+        "ollama"
+      ],
+      [
+        "runpipeline.py",
+        "ollama"
+      ],
+      [
+        "samples",
+        "customer"
+      ],
+      [
+        "samples",
+        "payment"
+      ],
+      [
+        "samples",
+        "reporting"
+      ]
+    ],
+    "fp_edges": [],
+    "fn_edges": [],
+    "calibration": {
+      "0.90-1.00": {
+        "count": 5,
+        "accuracy": 1.0
+      }
+    }
+  },
+  "timing": {
+    "extract_s": 0.025,
+    "infer_s": 15.432,
+    "total_s": 15.457,
+    "calls_per_sec": 0.32,
+    "avg_infer_ms": 3085.4,
+    "parse_failures": 0
+  },
+  "all_predictions": [
+    {
+      "caller": "run_pipeline.py",
+      "callee": "ollama_api",
+      "confidence": 0.95,
+      "url": "http://localhost:11434/api/tags",
+      "method": "get",
+      "file": "run_pipeline.py",
+      "elapsed_ms": 9899
+    },
+    {
+      "caller": "Samples",
+      "callee": "customer_service",
+      "confidence": 1.0,
+      "url": "http://customer-service.internal/api/v1/customers",
+      "method": "get",
+      "file": "Samples/service_a/app.py",
+      "elapsed_ms": 1366
+    },
+    {
+      "caller": "Samples",
+      "callee": "payment_service",
+      "confidence": 0.95,
+      "url": "http://localhost:5001/api/pay",
+      "method": "post",
+      "file": "Samples/service_a/app.py",
+      "elapsed_ms": 1417
+    },
+    {
+      "caller": "Samples",
+      "callee": "reporting_service",
+      "confidence": 1.0,
+      "url": "http://reporting-service/api/metrics",
+      "method": "get",
+      "file": "Samples/service_b/main.py",
+      "elapsed_ms": 1333
+    },
+    {
+      "caller": "Inference",
+      "callee": "ollama_api",
+      "confidence": 0.95,
+      "url": "http://localhost:11434/api/generate",
+      "method": "post",
+      "file": "Inference/infer_service_dependency.py",
+      "elapsed_ms": 1412
+    }
+  ]
+}

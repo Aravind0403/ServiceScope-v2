@@ -33,6 +33,18 @@ def _extract_fstring_prefix(node: ast.JoinedStr) -> str:
     return "".join(parts)
 
 
+def is_http_client_name(name: str) -> bool:
+    """Return True if the receiver variable name looks like an HTTP client or session."""
+    name_lower = name.lower()
+    return (
+        name_lower in ("client", "session", "api", "conn", "request", "http")
+        or name_lower.endswith(("_client", "_session", "_api", "_conn"))
+        or "http" in name_lower
+        or "client." in name_lower
+        or "session." in name_lower
+    )
+
+
 def extract_http_calls_from_file(file_path: str) -> List[Dict]:
     """
     Extract HTTP calls from a single Python file.
@@ -58,44 +70,37 @@ def extract_http_calls_from_file(file_path: str) -> List[Dict]:
         def visit_Call(self, node):
             try:
                 if isinstance(node.func, ast.Attribute):
-                    obj = node.func.value
-                    method = node.func.attr
-
-                    if method not in HTTP_METHODS:
-                        self.generic_visit(node)
-                        return
-
-                    # Pattern 1: requests.get/post/etc
-                    if isinstance(obj, ast.Name) and obj.id == "requests":
-                        self._capture(node, method)
-
-                    # Pattern 2: httpx.get/post/etc
-                    elif isinstance(obj, ast.Name) and obj.id == "httpx":
-                        self._capture(node, method)
-
-                    # Pattern 5: urllib.request.urlopen  (handled separately below)
-
-                    # Pattern 3: client.get/post (requests.Session, httpx.Client, aiohttp)
-                    # Guard: only match absolute URLs (http/https) to avoid catching
-                    # FastAPI route decorators like @router.get("/path").
+                    # Pattern 5: urllib.request.urlopen as a dotted call
+                    if (
+                        node.func.attr == "urlopen"
+                        and isinstance(node.func.value, ast.Attribute)
+                        and node.func.value.attr == "request"
+                        and isinstance(node.func.value.value, ast.Name)
+                        and node.func.value.value.id == "urllib"
+                    ):
+                        self._capture(node, "get", require_absolute=True)  # urlopen is always GET-like
                     else:
-                        self._capture(node, method, require_absolute=True)
+                        obj = node.func.value
+                        method = node.func.attr
 
-                # Pattern 5: urllib.request.urlopen(url)
-                elif isinstance(node.func, ast.Attribute):
-                    pass  # handled above
+                        if method in HTTP_METHODS:
+                            # Pattern 1: requests.get/post/etc
+                            if isinstance(obj, ast.Name) and obj.id == "requests":
+                                self._capture(node, method, require_absolute=True)
 
-                # urllib.request.urlopen as a dotted call
-                if (
-                    isinstance(node.func, ast.Attribute)
-                    and node.func.attr == "urlopen"
-                    and isinstance(node.func.value, ast.Attribute)
-                    and node.func.value.attr == "request"
-                    and isinstance(node.func.value.value, ast.Name)
-                    and node.func.value.value.id == "urllib"
-                ):
-                    self._capture(node, "get")  # urlopen is always GET-like
+                            # Pattern 2: httpx.get/post/etc
+                            elif isinstance(obj, ast.Name) and obj.id == "httpx":
+                                self._capture(node, method, require_absolute=True)
 
+                            # Pattern 3: client.get/post (requests.Session, httpx.Client, aiohttp)
+                            # Guard: only match absolute URLs (http/https) to avoid catching
+                            # FastAPI route decorators like @router.get("/path").
+                            else:
+                                receiver_name = ast.unparse(obj)
+                                if is_http_client_name(receiver_name):
+                                    self._capture(node, method, require_absolute=True)
+                        elif isinstance(obj, ast.Name) and obj.id == "grpc" and method in ("insecure_channel", "secure_channel"):
+                            self._capture(node, "grpc", require_absolute=False)
             except Exception as e:
                 print(f"Error visiting node: {e}")
             self.generic_visit(node)
@@ -161,6 +166,15 @@ def extract_http_calls_from_file(file_path: str) -> List[Dict]:
                         "url_is_dynamic": True,
                         "url_raw_expr": ast.unparse(arg),
                     })
+            else:
+                expr_str = ast.unparse(arg)
+                calls.append({
+                    "method": method,
+                    "url": f"<dynamic:{expr_str}>",
+                    "line": node.lineno,
+                    "url_is_dynamic": True,
+                    "url_raw_expr": expr_str,
+                })
 
     visitor = APICallVisitor()
     visitor.visit(tree)
@@ -197,7 +211,13 @@ def walk_and_extract_calls(base_dir: str) -> List[Dict]:
                     parts = rel_path.split(os.sep)
 
                     call["file"] = rel_path
-                    call["service"] = parts[0] if parts else "unknown"
+                    service = "unknown"
+                    if parts:
+                        if parts[0] in ["src", "services", "apps", "cmd", "internal"] and len(parts) > 1:
+                            service = parts[1]
+                        else:
+                            service = parts[0]
+                    call["service"] = service
                     all_calls.append(call)
 
     return all_calls

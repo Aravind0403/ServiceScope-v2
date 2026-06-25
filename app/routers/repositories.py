@@ -253,3 +253,66 @@ async def delete_repository(
 
     await db.delete(repo)
     await db.commit()
+
+
+@router.get("/{repo_id}/blast-radius")
+async def get_blast_radius(
+    repo_id: UUID,
+    service: str,
+    min_confidence: float = 0.5,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Compute and return the blast radius for a given service in a repository.
+
+    The blast radius includes all services affected both inbound and outbound.
+    Confidence scores are propagated along paths using independent probability multiplication.
+    """
+    # 1. Verify repository exists
+    result = await db.execute(
+        select(Repository).where(Repository.id == repo_id)
+    )
+    repo = result.scalar_one_or_none()
+
+    if not repo:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Repository not found"
+        )
+
+    # 2. Verify user has access
+    if repo.tenant_id != current_user.tenant_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    # 3. Retrieve all inferred dependencies for this repo
+    from app.models import ExtractedCall, InferredDependency
+    from app.analysis.graph_builder import build_graph
+    from app.analysis.blast_radius import compute_blast_radius
+
+    deps_result = await db.execute(
+        select(InferredDependency)
+        .join(ExtractedCall, InferredDependency.extracted_call_id == ExtractedCall.id)
+        .where(ExtractedCall.repository_id == repo_id)
+    )
+    dependencies = deps_result.scalars().all()
+
+    # 4. Build graph
+    graph = build_graph(dependencies)
+
+    # 5. Compute blast radius
+    try:
+        results = compute_blast_radius(graph, service, confidence_threshold=min_confidence)
+        return results
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "error": "service not found",
+                "message": str(e),
+                "available_services": sorted(list(graph.nodes))
+            }
+        )

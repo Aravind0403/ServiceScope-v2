@@ -350,7 +350,10 @@ requests.post("http://notification-service/notify", json={{}})
         """Scanning ServiceScope itself should return only absolute-URL calls."""
         project_root = os.path.join(os.path.dirname(__file__), "..")
         calls = walk_and_extract_calls(project_root)
+        # Exclude benchmark files and unit tests which contains test mock HTTP calls
+        calls = [c for c in calls if not c["file"].startswith("benchmark") and not c["file"].startswith("tests")]
         non_http = [c for c in calls if not c["url"].startswith("http") and not c["url_is_dynamic"]]
         assert non_http == [], (
             f"Non-absolute static URLs found (likely false positives): {non_http}"
         )
+

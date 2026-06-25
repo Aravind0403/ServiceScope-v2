@@ -1,0 +1,131 @@
+{
+  "repo": "Aravind0403/ServiceScope",
+  "model": "qwen2.5:1.5b",
+  "mode": "few-shot",
+  "calls_extracted": 5,
+  "predictions": 5,
+  "extraction_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 5,
+    "fp": 0,
+    "fn": 0,
+    "fn_calls": [],
+    "fp_calls": []
+  },
+  "inference_metrics": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "tp": 0,
+    "fp": 3,
+    "fn": 5,
+    "tp_edges": [],
+    "fp_edges": [
+      [
+        "inference",
+        "unknown"
+      ],
+      [
+        "runpipeline.py",
+        "unknown"
+      ],
+      [
+        "samples",
+        "unknown"
+      ]
+    ],
+    "fn_edges": [
+      [
+        "inference",
+        "ollama"
+      ],
+      [
+        "runpipeline.py",
+        "ollama"
+      ],
+      [
+        "samples",
+        "customer"
+      ],
+      [
+        "samples",
+        "payment"
+      ],
+      [
+        "samples",
+        "reporting"
+      ]
+    ],
+    "calibration": {
+      "0.90-1.00": {
+        "count": 1,
+        "accuracy": 0.0
+      },
+      "0.70-0.80": {
+        "count": 1,
+        "accuracy": 0.0
+      },
+      "0.00-0.70": {
+        "count": 3,
+        "accuracy": 0.0
+      }
+    }
+  },
+  "timing": {
+    "extract_s": 0.017,
+    "infer_s": 2.149,
+    "total_s": 2.166,
+    "calls_per_sec": 2.33,
+    "avg_infer_ms": 429.2,
+    "parse_failures": 0
+  },
+  "all_predictions": [
+    {
+      "caller": "run_pipeline.py",
+      "callee": "unknown",
+      "confidence": 0.75,
+      "url": "http://localhost:11434/api/tags",
+      "method": "get",
+      "file": "run_pipeline.py",
+      "elapsed_ms": 512
+    },
+    {
+      "caller": "Samples",
+      "callee": "unknown",
+      "confidence": 0.45,
+      "url": "http://customer-service.internal/api/v1/customers",
+      "method": "get",
+      "file": "Samples/service_a/app.py",
+      "elapsed_ms": 431
+    },
+    {
+      "caller": "Samples",
+      "callee": "unknown",
+      "confidence": 0.68,
+      "url": "http://localhost:5001/api/pay",
+      "method": "post",
+      "file": "Samples/service_a/app.py",
+      "elapsed_ms": 427
+    },
+    {
+      "caller": "Samples",
+      "callee": "unknown",
+      "confidence": 0.6,
+      "url": "http://reporting-service/api/metrics",
+      "method": "get",
+      "file": "Samples/service_b/main.py",
+      "elapsed_ms": 387
+    },
+    {
+      "caller": "Inference",
+      "callee": "unknown",
+      "confidence": 0.95,
+      "url": "http://localhost:11434/api/generate",
+      "method": "post",
+      "file": "Inference/infer_service_dependency.py",
+      "elapsed_ms": 389
+    }
+  ]
+}

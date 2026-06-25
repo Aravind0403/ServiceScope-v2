@@ -1,0 +1,20 @@
+{
+  "repo": "thangchung/go-coffeeshop",
+  "url": "https://github.com/thangchung/go-coffeeshop",
+  "description": "Go Coffee Shop microservices demo. Demonstrates Event Sourcing, CQRS, gRPC, and REST API Gateway.",
+  "ground_truth_source": "manual_code_inspection",
+  "notes": {
+    "extraction": "AST parser successfully extracts the gRPC dial call in internal/counter and the generated grpc-gateway dial calls in proto/gen.",
+    "inference": "Counter service depends on Product service. The API gateway (proto/proxy) depends on both Product and Counter services."
+  },
+  "true_calls": [
+    {"caller": "counter", "method": "grpc", "file": "internal/counter/infras/grpc/product_client.go"},
+    {"caller": "proto", "method": "grpc", "file": "proto/gen/counter.pb.gw.go"},
+    {"caller": "proto", "method": "grpc", "file": "proto/gen/product.pb.gw.go"}
+  ],
+  "true_dependencies": [
+    {"caller": "counter", "callee": "product", "verified": true, "evidence": "product_client.go connects to product service gRPC endpoint"},
+    {"caller": "proto",   "callee": "counter", "verified": true, "evidence": "counter.pb.gw.go registers counter service handler endpoint"},
+    {"caller": "proto",   "callee": "product", "verified": true, "evidence": "product.pb.gw.go registers product service handler endpoint"}
+  ]
+}

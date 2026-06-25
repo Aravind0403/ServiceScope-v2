@@ -1,0 +1,24 @@
+{
+  "repo": "Aravind0403/ServiceScope",
+  "url": "https://github.com/Aravind0403/ServiceScope",
+  "description": "ServiceScope v1 codebase. Contains 5 HTTP calls.",
+  "ground_truth_source": "manual_code_inspection",
+  "notes": {
+    "extraction": "All 5 calls extracted from ServiceScope v1 files (run_pipeline.py, service_a, service_b, infer_service_dependency.py)",
+    "inference": "All 5 dependencies manually verified from the code."
+  },
+  "true_calls": [
+    {"caller": "run_pipeline.py", "method": "get", "file": "run_pipeline.py"},
+    {"caller": "Samples", "method": "get", "file": "Samples/service_a/app.py"},
+    {"caller": "Samples", "method": "post", "file": "Samples/service_a/app.py"},
+    {"caller": "Samples", "method": "get", "file": "Samples/service_b/main.py"},
+    {"caller": "Inference", "method": "post", "file": "Inference/infer_service_dependency.py"}
+  ],
+  "true_dependencies": [
+    {"caller": "run_pipeline.py", "callee": "ollama", "verified": true, "evidence": "Ollama tags API check"},
+    {"caller": "Samples", "callee": "customer_service", "verified": true, "evidence": "service_a calls customer-service.internal"},
+    {"caller": "Samples", "callee": "payment_service", "verified": true, "evidence": "service_a calls mock payment gateway (port 5001)"},
+    {"caller": "Samples", "callee": "reporting_service", "verified": true, "evidence": "service_b calls reporting-service"},
+    {"caller": "Inference", "callee": "ollama", "verified": true, "evidence": "infer_service_dependency calls local Ollama generate API"}
+  ]
+}

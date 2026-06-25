@@ -1,0 +1,93 @@
+{
+  "repo": "thangchung/go-coffeeshop",
+  "model": "gemma3:4b",
+  "mode": "service-aware",
+  "calls_extracted": 3,
+  "predictions": 3,
+  "extraction_metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "tp": 3,
+    "fp": 0,
+    "fn": 0,
+    "fn_calls": [],
+    "fp_calls": []
+  },
+  "inference_metrics": {
+    "precision": 0.5,
+    "recall": 0.333,
+    "f1": 0.4,
+    "tp": 1,
+    "fp": 1,
+    "fn": 2,
+    "tp_edges": [
+      [
+        "counter",
+        "product"
+      ]
+    ],
+    "fp_edges": [
+      [
+        "proto",
+        "proxy"
+      ]
+    ],
+    "fn_edges": [
+      [
+        "proto",
+        "counter"
+      ],
+      [
+        "proto",
+        "product"
+      ]
+    ],
+    "calibration": {
+      "0.90-1.00": {
+        "count": 3,
+        "accuracy": 0.333
+      }
+    }
+  },
+  "timing": {
+    "extract_s": 0.02,
+    "infer_s": 7.18,
+    "total_s": 7.2,
+    "calls_per_sec": 0.42,
+    "avg_infer_ms": 2392.7,
+    "parse_failures": 0
+  },
+  "all_predictions": [
+    {
+      "caller": "counter",
+      "callee": "product",
+      "confidence": 0.95,
+      "is_external": false,
+      "url": "<dynamic:cfg.ProductClient.URL>",
+      "method": "grpc",
+      "file": "internal/counter/infras/grpc/product_client.go",
+      "elapsed_ms": 4857
+    },
+    {
+      "caller": "proto",
+      "callee": "proxy",
+      "confidence": 0.95,
+      "is_external": false,
+      "url": "<dynamic:endpoint>",
+      "method": "grpc",
+      "file": "proto/gen/counter.pb.gw.go",
+      "elapsed_ms": 1323
+    },
+    {
+      "caller": "proto",
+      "callee": "proxy",
+      "confidence": 0.95,
+      "is_external": false,
+      "url": "<dynamic:endpoint>",
+      "method": "grpc",
+      "file": "proto/gen/product.pb.gw.go",
+      "elapsed_ms": 998
+    }
+  ]
+}
