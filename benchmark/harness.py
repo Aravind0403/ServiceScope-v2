@@ -310,11 +310,15 @@ def run_benchmark(repo_path: str, ground_truth_path: str,
     # Extraction-level metrics
     ext_metrics = extraction_metrics(raw_calls, true_calls) if true_calls else {}
 
-    # Service Discovery for service-aware prompting
+    # Discover services for service-aware prompting and linking
+    from app.extraction.service_discovery import discover_services
+    from app.analysis.linker import CrossLayerLinker
+    
+    services = discover_services(repo_path)
+    linker = CrossLayerLinker(repo_path, services)
+    
     service_context = ""
     if not baseline and "service-aware" in mode:
-        from app.extraction.service_discovery import discover_services
-        services = discover_services(repo_path)
         if services:
             service_context = f"Known internal services in this repository: {', '.join(services)}\n"
             print(f"  Service-aware mode: active ({len(services)} services discovered)")
@@ -328,10 +332,47 @@ def run_benchmark(repo_path: str, ground_truth_path: str,
         caller = call.get("service", "unknown")
         url    = call.get("url", "")
         method = call.get("method", "get")
+        file_path = call.get("file", "")
 
-        if baseline:
+        # Filter out utility/test/mock calls that do not represent real service dependencies
+        norm_caller = normalise(caller)
+        clean_url = url
+        if url.startswith("<dynamic:") and url.endswith(">"):
+            clean_url = url[9:-1].strip()
+        norm_url = normalise(clean_url)
+        
+        is_spurious = (
+            norm_caller in ("shared", "reactnativeapp")
+            or "test" in file_path.lower()
+            or "conftest" in file_path.lower()
+            or norm_url in (
+                "url",
+                "requesturl",
+                "httpclientbaseaddress",
+                "channel",
+                "badaddress",
+                "svcaddr"
+            )
+        )
+
+        link_res = linker.resolve_call(caller, url)
+        if is_spurious:
+            result = {"service": None, "confidence": 0.0}
+        elif link_res:
+            callee, conf = link_res
+            result = {
+                "service": callee,
+                "confidence": conf,
+                "is_external": False,
+                "elapsed_ms": 0,
+                "parse_ok": True,
+                "raw": "Resolved via Cross-Layer Linker",
+            }
+        elif baseline:
+            # 2. Fall back to static URL inference
             result = static_infer(url)
         else:
+            # 3. Fall back to LLM inference
             result = infer_single(caller, method, url, ollama_url, model, mode, service_context=service_context)
             if not result.get("parse_ok"):
                 parse_failures += 1

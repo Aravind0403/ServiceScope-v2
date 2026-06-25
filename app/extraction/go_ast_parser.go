@@ -104,7 +104,51 @@ func extractCallsFromFile(path, baseDir string, fset *token.FileSet) []Extracted
 		}
 	}
 
+	localVars := make(map[string]ast.Expr)
+
+	resolveArg := func(arg ast.Expr) ast.Expr {
+		if ident, ok := arg.(*ast.Ident); ok {
+			if resolved, found := localVars[ident.Name]; found {
+				return resolved
+			}
+		}
+		return arg
+	}
+
 	ast.Inspect(fileNode, func(n ast.Node) bool {
+		if n == nil {
+			return true
+		}
+
+		// Track assignments to local variables
+		if assign, ok := n.(*ast.AssignStmt); ok {
+			for i, lhs := range assign.Lhs {
+				if i >= len(assign.Rhs) {
+					break
+				}
+				if ident, ok := lhs.(*ast.Ident); ok {
+					rhs := assign.Rhs[i]
+					// If RHS is mustCreateClient(arg), resolve to arg
+					if call, ok := rhs.(*ast.CallExpr); ok {
+						var funcName string
+						if sel, ok := call.Fun.(*ast.SelectorExpr); ok {
+							funcName = sel.Sel.Name
+						} else if id, ok := call.Fun.(*ast.Ident); ok {
+							funcName = id.Name
+						}
+						if (funcName == "mustCreateClient" || funcName == "mustCreateGrpcClient") && len(call.Args) >= 1 {
+							localVars[ident.Name] = call.Args[0]
+						} else {
+							localVars[ident.Name] = rhs
+						}
+					} else {
+						localVars[ident.Name] = rhs
+					}
+				}
+			}
+			return true
+		}
+
 		call, ok := n.(*ast.CallExpr)
 		if !ok {
 			return true
@@ -118,7 +162,7 @@ func extractCallsFromFile(path, baseDir string, fset *token.FileSet) []Extracted
 			if ident, ok := selector.X.(*ast.Ident); ok && ident.Name == "http" {
 				if method == "get" || method == "post" || method == "postform" {
 					if len(call.Args) >= 1 {
-						extracted := createExtractedCall(method, call.Args[0], fset, relPath, service)
+						extracted := createExtractedCall(method, resolveArg(call.Args[0]), fset, relPath, service)
 						fileCalls = append(fileCalls, extracted)
 					}
 				} else if method == "newrequest" || method == "newrequestwithcontext" {
@@ -136,7 +180,7 @@ func extractCallsFromFile(path, baseDir string, fset *token.FileSet) []Extracted
 							// Try to use a variable method or default to lower method
 							reqMethod = renderNode(call.Args[methodArgIdx], fset)
 						}
-						extracted := createExtractedCall(reqMethod, call.Args[urlArgIdx], fset, relPath, service)
+						extracted := createExtractedCall(reqMethod, resolveArg(call.Args[urlArgIdx]), fset, relPath, service)
 						fileCalls = append(fileCalls, extracted)
 					}
 				}
@@ -150,7 +194,7 @@ func extractCallsFromFile(path, baseDir string, fset *token.FileSet) []Extracted
 						targetArgIdx = 1
 					}
 					if len(call.Args) > targetArgIdx {
-						extracted := createExtractedCall("grpc", call.Args[targetArgIdx], fset, relPath, service)
+						extracted := createExtractedCall("grpc", resolveArg(call.Args[targetArgIdx]), fset, relPath, service)
 						fileCalls = append(fileCalls, extracted)
 					}
 				}
@@ -165,7 +209,7 @@ func extractCallsFromFile(path, baseDir string, fset *token.FileSet) []Extracted
 					isStdHttp = true
 				}
 				if !isStdHttp && len(call.Args) >= 1 {
-					extracted := createExtractedCall(method, call.Args[0], fset, relPath, service)
+					extracted := createExtractedCall(method, resolveArg(call.Args[0]), fset, relPath, service)
 					// Apply require_absolute guard for generic client calls if the URL is static
 					if !extracted.URLIsDynamic {
 						if strings.HasPrefix(extracted.URL, "http://") || strings.HasPrefix(extracted.URL, "https://") {
@@ -195,7 +239,7 @@ func extractCallsFromFile(path, baseDir string, fset *token.FileSet) []Extracted
 					}
 				}
 				if !isStdLib && len(call.Args) >= 1 {
-					extracted := createExtractedCall("grpc", call.Args[0], fset, relPath, service)
+					extracted := createExtractedCall("grpc", resolveArg(call.Args[0]), fset, relPath, service)
 					fileCalls = append(fileCalls, extracted)
 				}
 			}

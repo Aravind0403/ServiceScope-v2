@@ -1,0 +1,202 @@
+{
+  "repo": "open-telemetry/opentelemetry-demo",
+  "url": "https://github.com/open-telemetry/opentelemetry-demo",
+  "description": "OpenTelemetry Astronomy Shop Demo with polyglot microservices",
+  "ground_truth_source": "published_architecture_and_code_inspection",
+  "true_calls": [
+    {
+      "caller": "recommendation",
+      "method": "grpc",
+      "file": "src/recommendation/recommendation_server.py"
+    },
+    {
+      "caller": "product-reviews",
+      "method": "grpc",
+      "file": "src/product-reviews/product_reviews_server.py"
+    },
+    {
+      "caller": "chatbot",
+      "method": "post",
+      "file": "src/chatbot/src/chat_interface/chat_interface.py"
+    },
+    {
+      "caller": "shared",
+      "method": "get",
+      "file": "src/shared/tools.py"
+    },
+    {
+      "caller": "shared",
+      "method": "post",
+      "file": "src/shared/tools.py"
+    },
+    {
+      "caller": "checkout",
+      "method": "grpc",
+      "file": "src/checkout/main.go"
+    },
+    {
+      "caller": "checkout",
+      "method": "post",
+      "file": "src/checkout/main.go"
+    },
+    {
+      "caller": "frontend",
+      "method": "get",
+      "file": "src/frontend/utils/Request.ts"
+    },
+    {
+      "caller": "frontend",
+      "method": "get",
+      "file": "src/frontend/gateways/http/Shipping.gateway.ts"
+    },
+    {
+      "caller": "frontend",
+      "method": "grpc",
+      "file": "src/frontend/gateways/rpc/Ad.gateway.ts"
+    },
+    {
+      "caller": "frontend",
+      "method": "grpc",
+      "file": "src/frontend/gateways/rpc/ProductReview.gateway.ts"
+    },
+    {
+      "caller": "frontend",
+      "method": "grpc",
+      "file": "src/frontend/gateways/rpc/Checkout.gateway.ts"
+    },
+    {
+      "caller": "frontend",
+      "method": "grpc",
+      "file": "src/frontend/gateways/rpc/Cart.gateway.ts"
+    },
+    {
+      "caller": "frontend",
+      "method": "grpc",
+      "file": "src/frontend/gateways/rpc/Recommendations.gateway.ts"
+    },
+    {
+      "caller": "frontend",
+      "method": "grpc",
+      "file": "src/frontend/gateways/rpc/ProductCatalog.gateway.ts"
+    },
+    {
+      "caller": "frontend",
+      "method": "grpc",
+      "file": "src/frontend/gateways/rpc/Currency.gateway.ts"
+    },
+    {
+      "caller": "cart",
+      "method": "grpc",
+      "file": "src/cart/tests/CartServiceTests.cs"
+    },
+    {
+      "caller": "react-native-app",
+      "method": "get",
+      "file": "src/react-native-app/utils/Request.ts"
+    }
+  ],
+  "true_dependencies": [
+    {
+      "caller": "recommendation",
+      "callee": "productcatalog",
+      "verified": true,
+      "evidence": "recommendation queries productcatalog"
+    },
+    {
+      "caller": "productreviews",
+      "callee": "productcatalog",
+      "verified": true,
+      "evidence": "productreviews queries productcatalog"
+    },
+    {
+      "caller": "chatbot",
+      "callee": "agent",
+      "verified": true,
+      "evidence": "chatbot posts to agent"
+    },
+    {
+      "caller": "checkout",
+      "callee": "shipping",
+      "verified": true,
+      "evidence": "checkout calls shipping"
+    },
+    {
+      "caller": "checkout",
+      "callee": "productcatalog",
+      "verified": true,
+      "evidence": "checkout calls productcatalog"
+    },
+    {
+      "caller": "checkout",
+      "callee": "cart",
+      "verified": true,
+      "evidence": "checkout calls cart"
+    },
+    {
+      "caller": "checkout",
+      "callee": "currency",
+      "verified": true,
+      "evidence": "checkout calls currency"
+    },
+    {
+      "caller": "checkout",
+      "callee": "email",
+      "verified": true,
+      "evidence": "checkout calls email"
+    },
+    {
+      "caller": "checkout",
+      "callee": "payment",
+      "verified": true,
+      "evidence": "checkout calls payment"
+    },
+    {
+      "caller": "frontend",
+      "callee": "shipping",
+      "verified": true,
+      "evidence": "frontend gets shipping quote"
+    },
+    {
+      "caller": "frontend",
+      "callee": "ad",
+      "verified": true,
+      "evidence": "frontend gets ads"
+    },
+    {
+      "caller": "frontend",
+      "callee": "productreviews",
+      "verified": true,
+      "evidence": "frontend gets product reviews"
+    },
+    {
+      "caller": "frontend",
+      "callee": "checkout",
+      "verified": true,
+      "evidence": "frontend calls checkout"
+    },
+    {
+      "caller": "frontend",
+      "callee": "cart",
+      "verified": true,
+      "evidence": "frontend calls cart"
+    },
+    {
+      "caller": "frontend",
+      "callee": "recommendation",
+      "verified": true,
+      "evidence": "frontend gets recommendations"
+    },
+    {
+      "caller": "frontend",
+      "callee": "productcatalog",
+      "verified": true,
+      "evidence": "frontend gets products"
+    },
+    {
+      "caller": "frontend",
+      "callee": "currency",
+      "verified": true,
+      "evidence": "frontend calls currency"
+    }
+  ]
+}

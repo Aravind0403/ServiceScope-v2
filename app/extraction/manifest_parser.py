@@ -410,4 +410,104 @@ def extract_env_from_manifests(repo_dir: str) -> Dict[str, Dict[str, str]]:
             else:
                 service_environments[name] = env_dict
 
+    # 5. Look for .env file and compose/docker-compose files in repo_dir
+    env_defaults = {}
+    env_file = os.path.join(repo_dir, ".env")
+    if os.path.exists(env_file):
+        try:
+            with open(env_file, "r", encoding="utf-8", errors="ignore") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith("#"):
+                        continue
+                    if "=" not in line:
+                        continue
+                    key, val = line.split("=", 1)
+                    key = key.strip().strip("'\"")
+                    val = val.strip().strip("'\"")
+                    env_defaults[key] = val
+                    
+            # Iteratively resolve references in .env values
+            for _ in range(5):
+                changed = False
+                for k, v in env_defaults.items():
+                    matches = re.findall(r'\$\{(\w+)\}|\$(\w+)', v)
+                    new_v = v
+                    for m in matches:
+                        var_name = m[0] or m[1]
+                        if var_name in env_defaults:
+                            target = f"${{{var_name}}}" if m[0] else f"${var_name}"
+                            new_v = new_v.replace(target, env_defaults[var_name])
+                    if new_v != v:
+                        env_defaults[k] = new_v
+                        changed = True
+                if not changed:
+                    break
+        except Exception as e:
+            print(f"Error parsing .env: {e}")
+
+    # Search for compose.yaml, compose.yml, docker-compose.yaml, docker-compose.yml files
+    compose_files = []
+    for root, dirs, files in os.walk(repo_dir):
+        # Skip common directories
+        dirs[:] = [d for d in dirs if d not in ['.git', '.github', 'node_modules', 'venv', '.venv']]
+        for file in files:
+            if file in ("compose.yaml", "compose.yml", "docker-compose.yaml", "docker-compose.yml") or (file.startswith("compose.") and file.endswith((".yaml", ".yml"))):
+                compose_files.append(os.path.join(root, file))
+
+    for cf in compose_files:
+        try:
+            with open(cf, "r", encoding="utf-8", errors="ignore") as f:
+                data = yaml.safe_load(f)
+            if not data or not isinstance(data, dict):
+                continue
+            services = data.get("services", {})
+            if not isinstance(services, dict):
+                continue
+            for service_name, service_config in services.items():
+                if not isinstance(service_config, dict):
+                    continue
+                env_dict = {}
+                env_block = service_config.get("environment")
+                if isinstance(env_block, list):
+                    for item in env_block:
+                        if not item:
+                            continue
+                        if "=" in item:
+                            k, v = item.split("=", 1)
+                            k = k.strip()
+                            v = v.strip().strip("'\"")
+                            env_dict[k] = v
+                        else:
+                            k = item.strip()
+                            if k in env_defaults:
+                                env_dict[k] = env_defaults[k]
+                elif isinstance(env_block, dict):
+                    for k, v in env_block.items():
+                        k = str(k).strip()
+                        v = str(v).strip().strip("'\"") if v is not None else ""
+                        if not v and k in env_defaults:
+                            env_dict[k] = env_defaults[k]
+                        else:
+                            env_dict[k] = v
+
+                # Resolve variable interpolations in the service's environment values
+                for k, v in env_dict.items():
+                    matches = re.findall(r'\$\{(\w+)\}|\$(\w+)', v)
+                    new_v = v
+                    for m in matches:
+                        var_name = m[0] or m[1]
+                        if var_name in env_defaults:
+                            target = f"${{{var_name}}}" if m[0] else f"${var_name}"
+                            new_v = new_v.replace(target, env_defaults[var_name])
+                    env_dict[k] = new_v
+
+                if env_dict:
+                    if service_name in service_environments:
+                        service_environments[service_name].update(env_dict)
+                    else:
+                        service_environments[service_name] = env_dict
+        except Exception as e:
+            print(f"Error parsing compose file {cf}: {e}")
+
     return service_environments

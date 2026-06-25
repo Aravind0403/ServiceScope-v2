@@ -86,6 +86,12 @@ def extract_calls_from_source(code: str, filepath: str, lang: str, service: str)
             if m:
                 return f"<dynamic:{m.group(1)}>", True, arg_text
 
+        # Check template string or general interpolation: `${SHIPPING_ADDR}/get-quote`
+        m = re.search(r'\$\{(\w+)\}', arg_text)
+        if m:
+            var_name = m.group(1)
+            return f"<dynamic:{var_name}>", True, arg_text
+
         # Basic string check
         if arg_node.type in ("string_literal", "string", "basic_string_literal"):
             val = arg_text.strip("\"'")

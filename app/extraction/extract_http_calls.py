@@ -100,7 +100,7 @@ def extract_http_calls_from_file(file_path: str) -> List[Dict]:
                     ):
                         if val.args and isinstance(val.args[0], ast.Constant) and isinstance(val.args[0].value, str):
                             return val.args[0].value
-                elif isinstance(func, ast.Name) and func.id == "getenv":
+                elif isinstance(func, ast.Name) and func.id in ("getenv", "must_map_env"):
                     if val.args and isinstance(val.args[0], ast.Constant) and isinstance(val.args[0].value, str):
                         return val.args[0].value
                 elif isinstance(func, ast.Attribute) and func.attr == "getenv":
