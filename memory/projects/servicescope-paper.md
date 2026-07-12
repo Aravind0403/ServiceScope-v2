@@ -346,3 +346,25 @@ Discussion + Threats to Validity | Conclusion | GenAI Declaration | References
 - Confirmed FTC formatting rules (18+7 pages, GenAI declaration mandatory)
 - Completed revised paper outline incorporating structural review feedback
 - **Next:** 5 answers from user → start writing LaTeX
+
+**Session 3 (25 Jun 2026):**
+- Completed OpenTelemetry Astronomy Shop GT: 18 call sites, 17 dependencies, 4 languages
+- Manifest linker (Docker Compose + .env): microservices-demo F1=0.966 (121ms), OTel F1=0.970 (436ms)
+- Linker + LLM fallback: F1=1.000 on both complex polyglot repos (1 LLM call each)
+- Tree-sitter polyglot extractors for Java, TypeScript, C# — OTel extraction F1=1.000
+- Updated paper: title, abstract, thesis, 4→5 stage architecture, new §5 Linker section
+- Updated all tables: 5→6 repos, Phase 5/6 columns, blast radius with linker rows
+- Historical CI validation: 15 PRs from microservices-demo, 100% pipeline success
+  - 4 infra PRs correctly filtered (terraform/helm/.github) → zero false positives
+  - Blast radius sizes consistent with known architecture (frontend=9, checkout=7)
+  - All runs <500ms — CI viable without LLM
+- Added §8.8 Historical CI Validation to paper
+- Paper compiles clean at 18 pages (at Springer limit)
+- **Remaining before submission:** abstract word count check, PDF metadata strip
+
+## Final Results (Session 3)
+| Repo | Linker F1 | Linker+LLM F1 | Time |
+|------|-----------|---------------|------|
+| microservices-demo | 0.966 | 1.000 | 1.2s |
+| OTel Astronomy Shop | 0.970 | 1.000 | 1.7s |
+| Historical CI (15 PRs) | deterministic | — | <500ms/PR |
